@@ -11,6 +11,7 @@ public class AuditFileSelectorTests
 {
     private const string DirectoryName = "audits";
     private const string Prefix = "audit_";
+    private const int MaxEntriesPerFile = 3;
     
     private readonly Mock<IFileSystem> _fileSystem;
     private readonly AuditFileSelector _sut;
@@ -18,7 +19,7 @@ public class AuditFileSelectorTests
     public AuditFileSelectorTests()
     {
         _fileSystem = new Mock<IFileSystem>();
-        _sut = new AuditFileSelector(_fileSystem.Object);
+        _sut = new AuditFileSelector(_fileSystem.Object, MaxEntriesPerFile, DirectoryName);
     }
 
     [Fact]
@@ -28,7 +29,7 @@ public class AuditFileSelectorTests
             .Setup(x => x.GetFiles(DirectoryName))
             .Returns(System.Array.Empty<string>());
 
-        var pathToWrite = _sut.GetPathToWrite(3, DirectoryName);
+        var pathToWrite = _sut.GetPathToWrite();
         
         pathToWrite.Should().Be(GetFilePath(1));
     }
@@ -52,7 +53,7 @@ public class AuditFileSelectorTests
                 "2"
             });
 
-        var pathToWrite = _sut.GetPathToWrite(3, DirectoryName);
+        var pathToWrite = _sut.GetPathToWrite();
         
         pathToWrite.Should().Be(GetFilePath(2));
     }
@@ -77,7 +78,7 @@ public class AuditFileSelectorTests
                 "3"
             });
 
-        var pathToWrite = _sut.GetPathToWrite(3, DirectoryName);
+        var pathToWrite = _sut.GetPathToWrite();
         
         pathToWrite.Should().Be(GetFilePath(3));
     }
@@ -101,7 +102,7 @@ public class AuditFileSelectorTests
                 "2"
             });
 
-        var pathToWrite = _sut.GetPathToWrite(3, DirectoryName);
+        var pathToWrite = _sut.GetPathToWrite();
         
         pathToWrite.Should().Be(GetFilePath(2));
     }

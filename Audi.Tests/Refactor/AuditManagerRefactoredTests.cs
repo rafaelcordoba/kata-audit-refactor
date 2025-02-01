@@ -9,8 +9,6 @@ namespace Audi.Tests.Refactor;
 
 public class AuditManagerRefactoredTests
 {
-    private const int MaxEntriesPerFile = 3;
-    private const string AnyDirectory = "anyDirectory";
     private const string AnyPath = "anyPath";
     private const string AnyVisitor = "anyVisitor";
     private readonly DateTime _timeOfVisit = new(1970, 1, 1);
@@ -24,8 +22,6 @@ public class AuditManagerRefactoredTests
     public AuditManagerRefactoredTests()
     {
         _sut = new AuditManagerRefactored(
-            MaxEntriesPerFile,
-            AnyDirectory,
             _fileSystem.Object,
             _fileSelector.Object,
             _visitorRecordFormatter.Object);
@@ -36,7 +32,7 @@ public class AuditManagerRefactoredTests
     {
         // Arrange
         const string expectedTextToWrite = "expectedText";
-        _fileSelector.Setup(x => x.GetPathToWrite(MaxEntriesPerFile, AnyDirectory))
+        _fileSelector.Setup(x => x.GetPathToWrite())
             .Returns(AnyPath);
         _fileSystem.Setup(x => x.ReadAllLines(AnyPath))
             .Returns(_existingLines);
@@ -48,7 +44,7 @@ public class AuditManagerRefactoredTests
         
         // Assert
         _fileSelector.Verify(x => 
-            x.GetPathToWrite(MaxEntriesPerFile, AnyDirectory), Times.Once);
+            x.GetPathToWrite(), Times.Once);
         _fileSystem.Verify(x => 
             x.ReadAllLines(AnyPath), Times.Once);
         _visitorRecordFormatter.Verify(x => 
